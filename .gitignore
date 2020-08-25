@@ -3,17 +3,6 @@
 ~*.pptx
 *.pptx
 
-# Cmake #
-#########
-CMakeFiles/
-CMakeCache.txt
-.cmake/
-cmake_install.cmake
-compile_commands.json
-Makefile
-*.cmake 
-Testing/
-
 # g-test #
 ##########
 googletest-build/
