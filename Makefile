@@ -6,7 +6,8 @@ LIB     	:= lib
 LIBRARIES   := -L$(CPPUTEST_HOME)/lib -lCppUTest -lCppUTestExt
 # The following line of code will automaticly find all *.cpp files in src 
 # SRCS = $(shell find src -name '*.cpp')
-SRCS    	:= 	src/example.cpp 
+SRCS    	:= 	src/example.cpp \
+				src/math.cpp
 MAIN       	= src/main.cpp
 INCLUDE 	:= inc
 
@@ -24,6 +25,8 @@ endif
 
 CFLAGS              += $(COMMON_CFLAGS)
 CXXFLAGS            += $(COMMON_CFLAGS) -std=c++11
+
+
 ifneq ($(CPPUTEST_HOME),)
 	HAS_CPPUTEST          = 1
 	CPPUTEST_FLAGS        = -I$(CPPUTEST_HOME)/include -fprofile-arcs -ftest-coverage
@@ -67,12 +70,9 @@ $(BIN): $(OBJS)
 	$(SILENCE)$(CXX) $(CXXFLAGS) $(OBJS) -o $@ 
 
 $(BUILD_DIR)/%.o: %.cpp
-	ifneq ($(HAS_CPPUTEST),1)
-		$(error CppUTest not found, cannot build the tests)
-	endif
-		$(SHOW_CXX) $@
-		$(SILENCE)mkdir -p $(dir $@)
-		$(SILENCE)$(CXX) $(CXXFLAGS) $(CPPUTEST_FLAGS) -c $< -o $@
+	$(SHOW_CXX) $@
+	$(SILENCE)mkdir -p $(dir $@)
+	$(SILENCE)$(CXX) $(CXXFLAGS) -I$(INCLUDE) -c $< -o $@
 
 run: clean all
 	@echo "🚀 Executing..."
@@ -90,6 +90,9 @@ $(TEST_BIN): $(TEST_OBJS)
 	$(SILENCE)$(CXX) $(TEST_OBJS) $(CPPUTEST_LDFLAGS) -o $@
 
 $(BUILD_DIR)/tests/%.o: %.cpp
+ifneq ($(HAS_CPPUTEST),1)
+	$(error CppUTest not found, cannot build the tests)
+endif
 	$(SHOW_CXX) $@
 	$(SILENCE)mkdir -p $(dir $@)
 	$(SILENCE)$(CXX) $(CXXFLAGS) $(CPPUTEST_FLAGS) -c $< -o $@
