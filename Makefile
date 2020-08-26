@@ -26,8 +26,8 @@ CFLAGS              += $(COMMON_CFLAGS)
 CXXFLAGS            += $(COMMON_CFLAGS) -std=c++11
 ifneq ($(CPPUTEST_HOME),)
 	HAS_CPPUTEST          = 1
-	CPPUTEST_FLAGS        = -I$(CPPUTEST_HOME)/include
-	CPPUTEST_LDFLAGS      = -L$(CPPUTEST_HOME)/lib -lCppUTest -lCppUTestExt
+	CPPUTEST_FLAGS        = -I$(CPPUTEST_HOME)/include -fprofile-arcs -ftest-coverage
+	CPPUTEST_LDFLAGS      = -L$(CPPUTEST_HOME)/lib -lCppUTest -lgcov --coverage -lCppUTestExt
 else
 	HAS_CPPUTEST          = $(shell pkg-config cpputest && echo 1)
 	ifeq ($(HAS_CPPUTEST),1)
@@ -48,6 +48,7 @@ SHOW_CXX            := $(SHOW_COMMAND) "[ $(CXX) ]"
 SHOW_CLEAN          := $(SHOW_COMMAND) "[ CLEAN ]"
 
 TEST_BIN            = $(BUILD_DIR)/$(EXECUTABLE)_tests
+TEST_RESULTS        = ./tests/results
 TEST_SRCS        	= $(SRCS) \
                       tests/first_test.cpp \
                       tests/main.cpp
@@ -81,6 +82,7 @@ clean:
 	@echo "🧹 Clearing..."
 	$(SHOW_CLEAN) $(BUILD_DIR)
 	$(SILENCE)-rm -rf $(BUILD_DIR)
+	$(SILENCE)-rm -rf $(TEST_RESULTS)
 .PHONY: clean
 
 $(TEST_BIN): $(TEST_OBJS)
@@ -98,6 +100,9 @@ build_tests: $(TEST_BIN)
 test: build_tests
 	@echo "🧪 Testing..."
 	./$(TEST_BIN)
+	gcovr -r .  
+	$(SILENCE)mkdir -p $(TEST_RESULTS)
+	gcovr -r . --html --html-details -o $(TEST_RESULTS)/coverage.html 
 .PHONY: test
 
 $(BUILD_DIR)/.tests_passed: $(TEST_BIN)

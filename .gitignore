@@ -9,6 +9,13 @@ googletest-build/
 googletest-download/
 googletest-src/
 
+# Python #
+venv/
+
+# Test #
+tests/results/
+
+
 # VS-Code #
 .vscode/
 
