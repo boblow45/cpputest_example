@@ -95,7 +95,7 @@ ifneq ($(HAS_CPPUTEST),1)
 endif
 	$(SHOW_CXX) $@
 	$(SILENCE)mkdir -p $(dir $@)
-	$(SILENCE)$(CXX) $(CXXFLAGS) $(CPPUTEST_FLAGS) -c $< -o $@
+	$(SILENCE)$(CXX) $(CXXFLAGS) $(CPPUTEST_FLAGS) -I$(INCLUDE) -c $< -o $@
 
 build_tests: $(TEST_BIN)
 .PHONY: build_tests
