@@ -58,7 +58,7 @@ all: $(BIN)
 .PHONY: all
 
 clean:
-	@echo "🧹 Clearing..."
+	@echo "🧹 Clearing Tests ..."
 	$(SHOW_CLEAN) $(BUILD_DIR)
 	$(SILENCE)-rm -rf $(BUILD_DIR)
 	$(SILENCE)-rm -rf $(TEST_RESULTS)
